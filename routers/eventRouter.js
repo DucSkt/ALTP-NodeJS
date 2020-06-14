@@ -34,6 +34,7 @@ async function createEvent(req, res) {
 
 async function deleteEvent(req, res) {
     let data = await eventModel.remove({});
+    console.log('XOA NEK 11')
     if (data) {
         return res.json({ error: false, data: data });
     }
