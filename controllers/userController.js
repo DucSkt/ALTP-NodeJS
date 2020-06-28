@@ -2,6 +2,7 @@ var modelData = require("../models/userModel");
 var crypto = require("crypto");
 var { sendMail } = require('./../cons');
 var { upload } = require("../middleware/multer.middleware");
+var nodemailer = require('nodemailer');
 
 var userModel = modelData.userModel;
 
@@ -60,9 +61,35 @@ async function forgotPassword(email) {
     var newPass = Math.floor(Math.random() * (999999 - 100000 + 1) - 100000);
 
     var data = await userModel.find({ email: email });
+    if (data[0] == "" || data[0] == undefined || data[0] == null) {
+        return;
+    }
     console.log(newPass);
+    console.log(data);
 
-    let result = await sendMail(email, newPass);
+
+    var transporter = nodemailer.createTransport({ // config mail server
+        service: 'Gmail',
+        auth: {
+            user: 'guitarchords.ptithcm@gmail.com',
+            pass: 'Nguyentiendat98'
+        }
+    });
+    var mainOptions = { // thiết lập đối tượng, nội dung gửi mail
+        from: 'Ai Là Triệu Phú',
+        to: email,
+        subject: 'Test Nodemailer',
+        text: 'mật khẩu mới của bạn là : ' + newPass
+    }
+
+    transporter.sendMail(mainOptions, function (err, info) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Message sent: ' + info.response);
+        }
+    });
+    // let result = await sendMail(email, newPass);
 
     var hash = crypto.createHmac('sha256', "ALTP")
         .update(newPass.toString())

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "nodemon index.js"
+    "runs": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +15,7 @@
     "multer": "^1.4.2",
     "nodemailer": "^6.4.6",
     "nodemon": "^2.0.4",
-    "schemar": "0.0.14"
+    "schemar": "0.0.14",
+    "socket.io": "^2.3.0"
   }
 }

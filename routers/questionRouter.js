@@ -2,11 +2,6 @@ var questionController = require("../controllers/questionController");
 var router = require("express").Router();
 
 router.post("/createQuestion" , createQuestion);
-router.get("/buttonPercent"   , buttonPercent);
-//router.get("/randomQuestion"  , randomQuestion);
-router.get("/buttonCall"      , buttonCall);
-router.get("/buttonOpinion"   , buttonOpinion);
-router.get("/Answer"          , Answer);
 router.post("/deleteQuestion" , deleteQuestion);
 router.post("/updateQuestion" , updateQuestion);
 router.get("/getQuestion"     , getQuestion);
@@ -89,58 +84,6 @@ async function createQuestion (req, res) {
         return res.json({error: true, message: 'Them that bai'});
     }
 }
-// 50:50
-async function buttonPercent(req, res){
-    let {ID} = req.body;
-    let data = await questionController.buttonPercent(ID);
-    
-    if(data){
-        return res.json({error: false, data: data});
-    }
-    else{
-        return res.json({error: true, message: 'hehe'});
-    }
-}
-
-// kết quả trả lời
-async function Answer(req, res){
-    let {ID} = req.body;
-    let data = await questionController.Answer(ID);
-    console.log({data});
-    
-    if(data){
-        return res.json({error: false, data: data});
-    }
-    else{
-        return res.json({error: true, message: 'hehe'});
-    }
-}
-//hỏi ý kiến khán giả
-async function buttonOpinion(req, res){
-    let {ID} = req.body;
-    let data = await questionController.buttonOpinion(ID);
-    console.log({data});
-    
-    if(data){
-        return res.json({error: false, data: data});
-    }
-    else{
-        return res.json({error: true, message: 'hehe'});
-    }
-}
-//gọi điện cho người thân
-async function buttonCall(req, res){
-    let {ID} = req.body;
-    let data = await questionController.buttonCall(ID);
-    console.log({data});
-    
-    if(data){
-        return res.json({error: false, data: data});
-    }
-    else{
-        return res.json({error: true, message: 'hehe'});
-    }
-}
 
 // xóa question
 async function deleteQuestion(req, res){
@@ -180,29 +123,16 @@ async function updateQuestion (req, res) {
     }
 }
 
-// lấy câu hỏi để thi ( lấy 1 lần 15 câu gồm 5 câu level1, 5 câu level2, 5 câu level3)
+// lấy câu hỏi để thi ( lấy 1 lần 15 câu gồm 5 câu level1, 5 câu level2, 5 câu level3 )
 async function getQuestion (req, res) {
     let data = await questionController.getQuestion();
     console.log("hieu  "+{data});
     
-    if(data){
+    if (data) {
+        console.log('22222', data)
         return res.json({error: false, data: data});
     }
     else{
         return res.json({error: true, message: 'hehe'});
     }
 }
-
-// random câu hỏi
-// async function randomQuestion(req, res){
-//     let {tmp} = req.body;
-//     let data = await questionController.randomQuestion(tmp);
-//     console.log({data});
-    
-//     if(data){
-//         return res.json({error: false, data: data});
-//     }
-//     else{
-//         return res.json({error: true, message: 'Không có câu hỏi'});
-//     }
-// }

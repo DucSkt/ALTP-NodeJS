@@ -7,13 +7,45 @@ var questionRouter = require("./routers/questionRouter");
 var eventRouter = require("./routers/eventRouter");
 var roomRouter = require("./routers/roomRouter");
 var examRouter = require("./routers/examRouter");
-
-
+var testRouter = require("./routers/testRouter");
+const socketIO = require('socket.io');
+const http = require('http')
+const port = 3000
 var app = express();
+
+let server = http.createServer(app)
+let io = socketIO(server)
+
+io.on('connection', (socket)=>{
+    console.log('New user connected');
+    //emit message from server to user
+    socket.emit('newMessage', {
+        from:'jen@mds',
+        text:'hepppp',
+        createdAt:123
+    });
+
+    // listen for message from user
+    socket.on('createMessage', (newMessage)=>{
+        console.log('newMessage', newMessage);
+    });
+
+    socket.on('send', (newMessage)=>{
+        console.log('send', newMessage);
+    });
+
+    // when server disconnects from user
+    socket.on('disconnect', ()=>{
+        console.log('disconnected from user');
+    });
+});
+
+server.listen(port);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use('/api', testRouter);
 app.use('/api', userRouter);
 app.use('/api', questionRouter);
 app.use('/api', eventRouter);

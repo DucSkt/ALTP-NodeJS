@@ -3,6 +3,7 @@ var examModel = modelData.examModel;
 var router = require("express").Router();
 
 router.post("/createExam", createExam);
+router.post("/deleteExam", deleteExam);
 
 module.exports = router;
 
@@ -51,5 +52,17 @@ async function createExam(req, res) {
         }
     } else {
         return res.json({ error: false, data: false });
+    }
+}
+
+
+async function deleteExam(req, res) {
+    let data = await examModel.remove({});
+    console.log('XOA NEK 11')
+    if (data) {
+        return res.json({ error: false, data: data });
+    }
+    else {
+        return res.json({ error: true, message: 'loi xoa event' });
     }
 }

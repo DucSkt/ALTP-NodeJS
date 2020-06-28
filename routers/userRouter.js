@@ -120,8 +120,7 @@ async function forgotPassword(req, res) {
 
     if (data) {
         return res.json({ error: false, data: data });
-    }
-    else {
+    } else {
         return res.json({ error: true, message: 'hehe' });
     }
 }

@@ -6,6 +6,7 @@ var cons = require("../cons");
 router.post("/createRoom", createRoom);
 router.post("/deleteRoom", deleteRoom);
 router.post("/getPersonOnline", getPersonOnline);
+router.post("/deleteRoomAll", deleteRoom);
 
 module.exports = router;
 
@@ -121,5 +122,16 @@ async function getPersonOnline(req, res) {
     }
     else {
         return res.json({ error: true, message: 'loi getPersonOnline' });
+    }
+}
+
+async function deleteRoom(req, res) {
+    let data = await roomModel.remove({});
+    console.log('XOA NEK 11')
+    if (data) {
+        return res.json({ error: false, data: data });
+    }
+    else {
+        return res.json({ error: true, message: 'loi xoa event' });
     }
 }
