@@ -151,8 +151,6 @@ async function getQuestion() {
     for(let l = 0; l < 5; ++l){
         levelQ[j] = data1[(arr1[MAX1 - l]-1)];
         j++;
-        console.log("hehehe   "+(arr1[MAX1 - l]-1)); 
-        // console.log("hehehe   "+data[arr[MAX - l]]);
     }
 
    // chọn ra 5 câu ở level 2
@@ -173,7 +171,6 @@ async function getQuestion() {
     for(let l = 0; l < 5; ++l){
         levelQ[j] =  data2[(arr2[MAX2 - l]-1)];
         j++;
-         console.log("hehehe   "+(arr2[MAX2 - l]-1)); 
     }
 
     // chọn ra 5 câu ở level 3
@@ -195,7 +192,6 @@ async function getQuestion() {
     for(let l = 0; l < 5; ++l){
         levelQ[j] =  data3[(arr3[MAX3 - l]-1)];
         j++;
-         console.log("hehehe   "+(arr3[MAX3 - l]-1)); 
     }
     
     return levelQ;

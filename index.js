@@ -8,40 +8,18 @@ var eventRouter = require("./routers/eventRouter");
 var roomRouter = require("./routers/roomRouter");
 var examRouter = require("./routers/examRouter");
 var testRouter = require("./routers/testRouter");
+var roomAwaitRouter = require("./routers/roomAwaitRouter");
+var app = express();
 const socketIO = require('socket.io');
 const http = require('http')
 const port = 3000
-var app = express();
 
 let server = http.createServer(app)
-let io = socketIO(server)
-
-io.on('connection', (socket)=>{
-    console.log('New user connected');
-    //emit message from server to user
-    socket.emit('newMessage', {
-        from:'jen@mds',
-        text:'hepppp',
-        createdAt:123
-    });
-
-    // listen for message from user
-    socket.on('createMessage', (newMessage)=>{
-        console.log('newMessage', newMessage);
-    });
-
-    socket.on('send', (newMessage)=>{
-        console.log('send', newMessage);
-    });
-
-    // when server disconnects from user
-    socket.on('disconnect', ()=>{
-        console.log('disconnected from user');
-    });
-});
+const io = socketIO(server)
+require('./middleware/socket')(io);
 
 server.listen(port);
-
+app.set('socketio', io);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -51,9 +29,10 @@ app.use('/api', questionRouter);
 app.use('/api', eventRouter);
 app.use('/api', roomRouter);
 app.use('/api', examRouter);
+app.use('/api', roomAwaitRouter);
 
 // var connect = mongoose.connect("mongodb://localhost:27017/ALTP");
-var connect = mongoose.connect("mongodb+srv://leanh:anh0944164009@cluster0-fsymw.mongodb.net/ALTP?retryWrites=true&w=majority",
+var connect = mongoose.connect("mongodb+srv://ducskt:nVYREW37ddBh7eCr@cluster0.p7app.mongodb.net/ALTP",
     {
         useNewUrlParser: true,
         useUnifiedTopology: true,

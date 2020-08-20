@@ -64,22 +64,22 @@ async function forgotPassword(email) {
     if (data[0] == "" || data[0] == undefined || data[0] == null) {
         return;
     }
-    console.log(newPass);
-    console.log(data);
+    console.log('111',newPass);
+    console.log('222', data);
 
 
     var transporter = nodemailer.createTransport({ // config mail server
         service: 'Gmail',
         auth: {
-            user: 'guitarchords.ptithcm@gmail.com',
-            pass: 'Nguyentiendat98'
+            user: 'ducskt111@gmail.com',
+            pass: 'z0944550079'
         }
     });
     var mainOptions = { // thiết lập đối tượng, nội dung gửi mail
         from: 'Ai Là Triệu Phú',
         to: email,
-        subject: 'Test Nodemailer',
-        text: 'mật khẩu mới của bạn là : ' + newPass
+        subject: 'Ai Là Triệu Phú',
+        text: 'Mật khẩu mới của bạn là : ' + newPass
     }
 
     transporter.sendMail(mainOptions, function (err, info) {

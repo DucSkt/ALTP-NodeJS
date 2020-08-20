@@ -75,7 +75,6 @@ async function createQuestion (req, res) {
 
     let params = {content,A,B,C,D,answer,level};
     let data = await questionController.createQuestion(params);
-    console.log({data});
     
     if(data){
         return res.json({error: false, data: data});
