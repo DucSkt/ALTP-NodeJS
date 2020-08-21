@@ -18,7 +18,7 @@ let server = http.createServer(app)
 const io = socketIO(server)
 require('./middleware/socket')(io);
 
-server.listen(port);
+server.listen(2000, "127.0.0.1");
 app.set('socketio', io);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
