@@ -18,7 +18,7 @@ let server = http.createServer(app)
 const io = socketIO(server)
 require('./middleware/socket')(io);
 
-server.listen(2000, "127.0.0.1");
+server.listen(port);
 app.set('socketio', io);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -40,5 +40,6 @@ var connect = mongoose.connect("mongodb+srv://ducskt:nVYREW37ddBh7eCr@cluster0.p
     });
 
 app.listen(process.env.PORT || 1998, function () {
-    console.log("ung dung chay tren port 1998");
+    console.log("SOCKET port : ", port);
+    console.log("NODEJS port 1998");
 });
