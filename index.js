@@ -39,7 +39,7 @@ var connect = mongoose.connect("mongodb+srv://ducskt:nVYREW37ddBh7eCr@cluster0.p
         useCreateIndex: true
     });
 
-app.listen(process.env.PORT || 1998, function () {
+app.listen(1998, function () {
     console.log("SOCKET port : ", port);
     console.log("NODEJS port 1998");
 });
