@@ -5,7 +5,8 @@ var userSchema = Schema({
     email    : String,
     password : String,
     avatar   : String,
-    score    : Number
+    score    : Number,
+    role     : String,
  });
 
 var userModel =mongoose.model("user", userSchema);

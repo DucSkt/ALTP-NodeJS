@@ -1,10 +1,15 @@
 var questionController = require("../controllers/questionController");
 var router = require("express").Router();
 
+var modelData = require("../models/questionModel");
+var questionModel = modelData.questionModel;
+
 router.post("/createQuestion" , createQuestion);
 router.post("/deleteQuestion" , deleteQuestion);
 router.post("/updateQuestion" , updateQuestion);
 router.get("/getQuestion"     , getQuestion);
+router.get("/getAllQuestion"     , getAllQuestion);
+router.post("/getQuestionFilter"     , getQuestionFilter);
 
 module.exports = router;
 
@@ -104,6 +109,7 @@ async function deleteQuestion(req, res){
 }
 // sửa qusestion
 async function updateQuestion (req, res) {
+    console.log('UPDAET 11111', req.body)
     var id = req.body.id;
     var content = req.body.content;
     var A = req.body.A;
@@ -112,6 +118,7 @@ async function updateQuestion (req, res) {
     var D = req.body.D;
     var answer = req.body.answer;
     var level = req.body.level;
+
 
     let data = await questionController.updateQuestion(id, content, A, B, C, D, answer, level);
     if(data){
@@ -129,6 +136,29 @@ async function getQuestion (req, res) {
     
     if (data) {
         console.log('22222', data)
+        return res.json({error: false, data: data});
+    }
+    else{
+        return res.json({error: true, message: 'hehe'});
+    }
+}
+
+async function getAllQuestion (req, res) {
+    let data = await questionModel.find({});
+
+    if (data) {
+        return res.json({error: false, data: data});
+    }
+    else{
+        return res.json({error: true, message: 'hehe'});
+    }
+}
+
+async function getQuestionFilter (req, res) {
+    const aa = await req.body.level;
+    let data = await questionModel.find({level: parseInt(aa) });
+
+    if (data) {
         return res.json({error: false, data: data});
     }
     else{

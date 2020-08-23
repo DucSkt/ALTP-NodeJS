@@ -51,8 +51,8 @@ async function register(req, res) {
         });
         return;
     }
-
-    let data = await userController.register(email, password);
+    var role = req.body.role;
+    let data = await userController.register(email, password, role);
     if (data) {
         return res.json({ error: false, data: data });
     }

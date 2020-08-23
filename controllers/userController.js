@@ -18,7 +18,7 @@ module.exports = {
 }
 
 // đăng ký
-async function register(email, password) {
+async function register(email, password, role) {
     let data = await userModel.find({ email: email });
     console.log("hehe " + email);
 
@@ -33,6 +33,7 @@ async function register(email, password) {
     var user = new userModel({
         email: email,
         password: password,
+        role: role,
         avatar: null,
         score: 0
     })
