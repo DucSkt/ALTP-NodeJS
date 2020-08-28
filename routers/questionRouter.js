@@ -132,10 +132,10 @@ async function updateQuestion (req, res) {
 // lấy câu hỏi để thi ( lấy 1 lần 15 câu gồm 5 câu level1, 5 câu level2, 5 câu level3 )
 async function getQuestion (req, res) {
     let data = await questionController.getQuestion();
-    console.log("hieu  "+{data});
-    
+
+    // console.log("hieu  " ,data);
     if (data) {
-        console.log('22222', data)
+
         return res.json({error: false, data: data});
     }
     else{

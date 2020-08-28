@@ -10,6 +10,8 @@ var examRouter = require("./routers/examRouter");
 var testRouter = require("./routers/testRouter");
 var roomAwaitRouter = require("./routers/roomAwaitRouter");
 var app = express();
+var { admin } = require("./middleware/firebase");
+
 const socketIO = require('socket.io');
 const http = require('http')
 const port = 3000

@@ -4,6 +4,7 @@ var userModel = modelData.userModel;
 var router = require("express").Router();
 var cons = require("../cons");
 var { upload } = require("../middleware/multer.middleware");
+var { admin } = require("../middleware/firebase");
 
 router.post("/register", register);
 router.post("/login", login);
@@ -63,6 +64,46 @@ async function register(req, res) {
 
 // đăng nhập
 async function login(req, res) {
+const tokenID = req.body.tokenDevice
+    console.log('TOken Firebase',  tokenID)
+    let message = {
+        notification: {
+            title: '$GOOG up 1.43% on the day',
+            body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
+        },
+        data: {
+            channel_id: 'test-channel',
+        },
+        android: {
+            ttl: 3600 * 1000,
+            notification: {
+                icon: 'stock_ticker_update',
+                color: '#f45342',
+            },
+        },
+        apns: {
+            payload: {
+                aps: {
+                    badge: 42,
+                },
+            },
+        },
+        token: tokenID,
+    };
+
+    admin.messaging().send(message)
+        .then((response) => {
+            // Response is a message ID string.
+            console.log('Successfully sent message:', response);
+        })
+        .catch((error) => {
+            console.log('Error sending message:', error);
+        });
+
+
+    //
+
+
     var email = req.body.email;
     if (!email) {
         res.json({
