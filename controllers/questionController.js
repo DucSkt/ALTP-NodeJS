@@ -2,11 +2,6 @@ var { questionModel } = require("../models/questionModel");
 
 module.exports = {
     createQuestion: createQuestion,
-    buttonPercent : buttonPercent,
-    //randomQuestion: randomQuestion,
-    buttonCall    : buttonCall,
-    buttonOpinion : buttonOpinion,
-    Answer        : Answer,
     deleteQuestion: deleteQuestion,
     updateQuestion: updateQuestion,
     getQuestion   : getQuestion,
@@ -17,80 +12,8 @@ async function createQuestion(params) {
     var question = new questionModel(
         params
     );
-
-    console.log({ question });
-
-
     let signalSaveQuestion = await question.save();
-
-    console.log({ signalSaveQuestion });
-
-
     return signalSaveQuestion;
-
-}
-
-// kết quả trả lời
-async function Answer(ID) {
-    let result = await questionModel.findOne({ _id: ID });
-
-    if (result.answer == "A") {
-        return result.A;
-    } else if (result.answer == "B") {
-        return result.B;
-    } else if (result.answer == "C") {
-        return result.C;
-    } else if (result.answer == "D") {
-        return result.D;
-    }
-}
-
-// 50:50
-async function buttonPercent(ID) {
-    let result = await questionModel.findOne({ _id: ID });
-
-    console.log("ket qua " + result.answer);
-
-    if (result.answer.trim() == "A") {
-        return { A: result.A, C: result.C }
-    } else if (result.answer.trim() == "B") {
-        return { B: result.B, D: result.D };
-    } else if (result.answer.trim() == "C") {
-        return { A: result.A, C: result.C };
-    } else if (result.answer.trim() == "D") {
-        return { B: result.B, D: result.D };
-    }
-
-}
-
-// hỏi ý kiến khán giả
-async function buttonOpinion(ID) {
-    let result = await questionModel.findOne({ _id: ID });
-
-    if (result.answer == "A") {
-        return { A: result.A = 60, B: result.B = 10, C: result.C = 25, D: result.D = 5 };
-    } else if (result.answer == "B") {
-        return { A: result.A = 5, B: result.B = 60, C: result.C = 25, D: result.D = 10 };
-    } else if (result.answer == "C") {
-        return { A: result.A = 25, B: result.B = 10, C: result.C = 60, D: result.D = 5 };
-    } else if (result.answer == "D") {
-        return { A: result.A = 25, B: result.B = 10, C: result.C = 5, D: result.D = 60 };
-    }
-}
-
-// gọi điện cho người thân
-async function buttonCall(ID) {
-    let result = await questionModel.findOne({ _id: ID });
-
-    if (result.answer == "A") {
-        return "Tôi nghĩ đáp án là " + result.A;
-    } else if (result.answer == "B") {
-        return "Tôi nghĩ đáp án là " + result.B;
-    } else if (result.answer == "C") {
-        return "Tôi nghĩ đáp án là " + result.C;
-    } else if (result.answer == "D") {
-        return "Tôi nghĩ đáp án là " + result.D;
-    }
 }
 
 //xóa question
@@ -100,9 +23,9 @@ async function deleteQuestion(id) {
 }
 
 //sửa question
-async function updateQuestion(id, content, A, B, C, D, answer, level) {
+async function updateQuestion(id, content, A, B, C, D, answer, level, adminId) {
     let result = await questionModel.findOne({ _id: id });
-    console.log({ result });
+
     if (!content) {
         content = result.content;
     }
@@ -124,13 +47,12 @@ async function updateQuestion(id, content, A, B, C, D, answer, level) {
     if (!level) {
         level = result.level;
     }
-    let data = await questionModel.update({ _id: id }, { content: content, A: A, B: B, C: C, D: D, answer: answer, level: level });
+
+    let data = await questionModel.update({ _id: id }, { content: content, A: A, B: B, C: C, D: D, answer: answer, level: level, adminId: adminId }, {new: true});
     return data;
 }
 
-// lấy câu hỏi để thi ( lấy 1 lần 15 câu gồm 5 câu level1, 5 câu level2, 5 câu level3)
 async function getQuestion() {
-    // chọn ra 5 câu ở level 1
     let data1 = await questionModel.find({level : 1});
     let max1 = data1.length;
     let arr1 = [];
@@ -196,78 +118,3 @@ async function getQuestion() {
     
     return levelQ;
 }
-
-// ramdom câu hỏi
-// async function randomQuestion(tmp) {
-//     if (tmp == 1) {
-//         let data = await questionModel.find({ level: 1 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         console.log("so random " + a);
-//         return data[a];
-//     }
-//     else if (tmp == 2) {
-//         let data = await questionModel.find({ level: 2 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-//     else if (tmp == 3) {
-//         let data = await questionModel.find({ level: 3 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-//     else if (tmp == 4) {
-//         let data = await questionModel.find({ level: 4 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-//     else if (tmp == 5) {
-//         let data = await questionModel.find({ level: 5 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-//     else if (tmp == 6) {
-//         let data = await questionModel.find({ level: 6 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-//     else if (tmp == 7) {
-//         let data = await questionModel.find({ level: 7 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-//     else if (tmp == 8) {
-//         let data = await questionModel.find({ level: 8 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-//     else if (tmp == 9) {
-//         let data = await questionModel.find({ level: 9 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-//     else if (tmp == 10) {
-//         let data = await questionModel.find({ level: 10 });
-//         console.log(data);
-
-//         let a = Math.floor(Math.random() * (data.length));
-//         return data[a];
-//     }
-// }

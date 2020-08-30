@@ -7,7 +7,8 @@ var questionSchema =  Schema({
     C       : String,
     D       : String,
     answer  : String,
-    level   : String
+    level   : String,
+    adminId : String
 });
 
 var questionModel = mongoose.model("Question",questionSchema);

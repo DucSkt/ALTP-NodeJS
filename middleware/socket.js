@@ -44,7 +44,6 @@ module.exports = (io) => {
 
             // lose
             if(examing[data.roomId].indexOf(-1) !== -1) {
-                console.log('-1 -1 -1')
                 io.sockets.in(data.roomId).emit('startExaming', {
                     indexQuestion: -1
                 })

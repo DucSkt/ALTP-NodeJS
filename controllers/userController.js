@@ -12,15 +12,14 @@ module.exports = {
     forgotPassword: forgotPassword,
     changePassword: changePassword,
     deleteUser: deleteUser,
-    updateScore: updateScore,
     getUser: getUser,
     getBestScore: getBestScore
-}
+};
 
 // đăng ký
-async function register(email, password, role) {
+async function register(email, password, roleID, OS, fcmID, scoreID, name) {
     let data = await userModel.find({ email: email });
-    console.log("hehe " + email);
+
 
     if (data.length > 0) {
         let a = "email đã tồn tại";
@@ -33,9 +32,12 @@ async function register(email, password, role) {
     var user = new userModel({
         email: email,
         password: password,
-        role: role,
+        name: name,
+        roleID: roleID.toString(),
+        OS: OS,
+        fcmID: fcmID.toString(),
         avatar: null,
-        score: 0
+        scoreID: scoreID.toString(),
     })
     let signalSaveUser = await user.save()
     return signalSaveUser;
@@ -65,11 +67,8 @@ async function forgotPassword(email) {
     if (data[0] == "" || data[0] == undefined || data[0] == null) {
         return;
     }
-    console.log('111',newPass);
-    console.log('222', data);
 
-
-    var transporter = nodemailer.createTransport({ // config mail server
+    var transporter = nodemailer.createTransport({
         service: 'Gmail',
         auth: {
             user: 'ducskt111@gmail.com',
@@ -138,18 +137,7 @@ async function deleteUser(id) {
     let data = await userModel.remove({ _id: id });
     return data;
 }
-// sửa điểm
-async function updateScore(email, score) {
-    var data = await userModel.find({ email: email });
-    if (data.length == 0) {
-        let a = 'email Không tồn tại !';
-        return a;
-    }
 
-    console.log(data);
-    let a = await userModel.update({ _id: data[0]._id }, { score: score });
-    return a;
-}
 // lấy tất cả các user
 async function getUser() {
     var data = await userModel.find({});

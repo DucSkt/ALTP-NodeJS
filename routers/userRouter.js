@@ -4,14 +4,15 @@ var userModel = modelData.userModel;
 var router = require("express").Router();
 var cons = require("../cons");
 var { upload } = require("../middleware/multer.middleware");
-var { admin } = require("../middleware/firebase");
+var roleRouter = require("../routers/roleRouter");
+var fcmRouter = require("../routers/fcmRouter");
+var scoreRouter = require("../routers/scoreRouter");
 
 router.post("/register", register);
 router.post("/login", login);
 router.post("/forgotPassword", forgotPassword);
 router.post("/changePassword", changePassword);
 router.post("/deleteUser", deleteUser);
-router.post("/updateScore", updateScore);
 router.get("/getUser", getUser);
 router.get("/getBestScore", getBestScore);
 router.post("/uploadAvatar", upload.single('avatar'), uploadAvatar);
@@ -52,8 +53,24 @@ async function register(req, res) {
         });
         return;
     }
-    var role = req.body.role;
-    let data = await userController.register(email, password, role);
+
+    var roleResult = await roleRouter.findRoleLocal('user');
+    var OS = req.body.OS;
+    var roleId = roleResult._id;
+    var fcmResult = await fcmRouter.createFCM();
+    var fcmID = fcmResult._id;
+
+    var scoreResult = await scoreRouter.createScore();
+    var scoreID = scoreResult._id;
+    var name = req.body.name;
+    let data = await userController.register(email, password, roleId, OS, fcmID, scoreID, name);
+
+    var roleResult2 = await roleRouter.findByIdName(data.roleID);
+    data.roleID = roleResult2
+    var scoreResult2 = await scoreRouter.findByIdName(data.scoreID);
+    data.scoreID = scoreResult2
+
+
     if (data) {
         return res.json({ error: false, data: data });
     }
@@ -61,49 +78,8 @@ async function register(req, res) {
         return res.json({ error: true, message: 'Thêm thất bại' });
     }
 }
-
 // đăng nhập
 async function login(req, res) {
-const tokenID = req.body.tokenDevice
-    console.log('TOken Firebase',  tokenID)
-    let message = {
-        notification: {
-            title: '$GOOG up 1.43% on the day',
-            body: '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
-        },
-        data: {
-            channel_id: 'test-channel',
-        },
-        android: {
-            ttl: 3600 * 1000,
-            notification: {
-                icon: 'stock_ticker_update',
-                color: '#f45342',
-            },
-        },
-        apns: {
-            payload: {
-                aps: {
-                    badge: 42,
-                },
-            },
-        },
-        token: tokenID,
-    };
-
-    admin.messaging().send(message)
-        .then((response) => {
-            // Response is a message ID string.
-            console.log('Successfully sent message:', response);
-        })
-        .catch((error) => {
-            console.log('Error sending message:', error);
-        });
-
-
-    //
-
-
     var email = req.body.email;
     if (!email) {
         res.json({
@@ -129,13 +105,52 @@ const tokenID = req.body.tokenDevice
         return;
     }
 
+    var OS = req.body.OS;
+    await userModel.updateOne({email: email}, {OS: OS})
     let data = await userController.login(email, password);
+
+    if (!data) {
+        return res.json({ error: true, message: 'sai email đăng nhập' });
+    }
+
+    var roleResult = await roleRouter.findByIdName(data[0].roleID);
+    data[0].roleID = roleResult
+    var scoreResult = await scoreRouter.findByIdName(data[0].scoreID);
+    data[0].scoreID = scoreResult
+    data[0]["password"] = '';
+
     if (data) {
         return res.json({ error: false, data: data });
     }
-    else {
-        return res.json({ error: true, message: 'sai email đăng nhập' });
+}
+
+// lấy tất cả các user
+async function getUser(req, res) {
+    let data = await userController.getUser();
+
+    if (!data) {
+        return res.json({ error: true, message: 'khong tim thay user' });
     }
+
+     const data2 = data.map( async (item, index) => {
+         return new Promise( async (resolve, reject) => {
+        var roleResult = await roleRouter.findByIdName(data[index].roleID);
+        data[index].roleID = roleResult
+        var scoreResult = await scoreRouter.findByIdName(data[index].scoreID);
+        data[index].scoreID = scoreResult
+        var fcmResult = await fcmRouter.findByIdName(data[index].fcmID);
+        data[index].fcmID = fcmResult
+        data[index]["password"] = '';
+             resolve(data[index])
+         })
+    })
+
+    let mediasArray = await Promise.all(data2);
+
+    if (data2) {
+        return res.json({ error: false, data: mediasArray });
+    }
+
 }
 
 // quên mật khẩu
@@ -157,7 +172,6 @@ async function forgotPassword(req, res) {
     }
 
     let data = await userController.forgotPassword(email)
-    console.log({ data });
 
     if (data) {
         return res.json({ error: false, data: data });
@@ -209,7 +223,6 @@ async function changePassword(req, res) {
     }
 
     let data = await userController.changePassword(email, password, newPass1, newPass2)
-    console.log({ data });
 
     if (data) {
         return res.json({ error: false, data: data });
@@ -237,47 +250,10 @@ async function deleteUser(req, res) {
         return res.json({ error: true, message: 'hehe' });
     }
 }
-// sửa điểm
-async function updateScore(req, res) {
-    var email = req.body.email;
-    if (!email) {
-        res.json({
-            statuscode: 400,
-            message: "bạn chưa nhập email"
-        });
-        return;
-    }
-    var score = req.body.score;
-    if (!score) {
-        res.json({
-            statuscode: 400,
-            message: "bạn chưa nhập score"
-        });
-        return;
-    }
-    let data = await userController.updateScore(email, score);
-    if (data) {
-        return res.json({ error: false, data: data });
-    }
-    else {
-        return res.json({ error: true, message: 'hehe' });
-    }
-}
-// lấy tất cả các user
-async function getUser(req, res) {
-    let data = await userController.getUser();
-    if (data) {
-        return res.json({ error: false, data: data });
-    }
-    else {
-        return res.json({ error: true, message: 'hehe' });
-    }
-}
 
 // lấy 5 người có số điểm cao nhất
 async function getBestScore(req, res) {
     let data = await userController.getBestScore();
-    console.log(data);
 
     if (data) {
         return res.json({ error: false, data: data });
@@ -297,7 +273,6 @@ async function uploadAvatar(req, res) {
         return;
     }
     var avatar = req.file;
-    console.log(avatar.filename);
 
     if (!avatar) {
         res.json({
@@ -311,7 +286,7 @@ async function uploadAvatar(req, res) {
         let a = 'email Không tồn tại !';
         return a;
     }
-    let a = await userModel.update({ _id: data[0]._id }, { avatar: avatar.filename });
+    let a = await userModel.update({ _id: data[0]._id }, { avatar: 'http://150.95.114.77:1998/image/upload/'+ avatar.filename });
     if (a) {
         return res.json({ error: false, data: a });
     }

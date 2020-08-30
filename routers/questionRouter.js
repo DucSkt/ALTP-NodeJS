@@ -77,8 +77,8 @@ async function createQuestion (req, res) {
         })
         return;
     }
-
-    let params = {content,A,B,C,D,answer,level};
+    var adminId = req.body.adminId;
+    let params = {content,A,B,C,D,answer,level, adminId};
     let data = await questionController.createQuestion(params);
     
     if(data){
@@ -109,7 +109,6 @@ async function deleteQuestion(req, res){
 }
 // sửa qusestion
 async function updateQuestion (req, res) {
-    console.log('UPDAET 11111', req.body)
     var id = req.body.id;
     var content = req.body.content;
     var A = req.body.A;
@@ -118,9 +117,9 @@ async function updateQuestion (req, res) {
     var D = req.body.D;
     var answer = req.body.answer;
     var level = req.body.level;
+    var adminId = req.body.adminId;
 
-
-    let data = await questionController.updateQuestion(id, content, A, B, C, D, answer, level);
+    let data = await questionController.updateQuestion(id, content, A, B, C, D, answer, level, adminId);
     if(data){
         return res.json({error: false, data: data});
     }
