@@ -153,7 +153,7 @@ async function getBestScore() {
     var data = await userModel.find().sort({ 'score': -1 });
     let bestScore = [];
     let j = 0;
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 3; i++) {
         bestScore[j] = data[i];
         j++;
     }

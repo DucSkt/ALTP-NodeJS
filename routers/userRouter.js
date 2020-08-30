@@ -124,6 +124,30 @@ async function login(req, res) {
     }
 }
 
+// lấy 5 người có số điểm cao nhất
+async function getBestScore(req, res) {
+    let data = await userController.getBestScore();
+
+    if (!data) {
+        return res.json({ error: true, message: 'khong tim thay user' });
+    }
+
+    const data2 = data.map( async (item, index) => {
+        return new Promise( async (resolve, reject) => {
+            var scoreResult = await scoreRouter.findByIdName(data[index].scoreID);
+            data[index].scoreID = scoreResult
+            data[index]["password"] = '';
+            resolve(data[index])
+        })
+    })
+
+    let mediasArray = await Promise.all(data2);
+
+    if (data2) {
+        return res.json({ error: false, data: data });
+    }
+}
+
 // lấy tất cả các user
 async function getUser(req, res) {
     let data = await userController.getUser();
@@ -251,17 +275,6 @@ async function deleteUser(req, res) {
     }
 }
 
-// lấy 5 người có số điểm cao nhất
-async function getBestScore(req, res) {
-    let data = await userController.getBestScore();
-
-    if (data) {
-        return res.json({ error: false, data: data });
-    }
-    else {
-        return res.json({ error: true, message: 'hehe' });
-    }
-}
 // thêm avatar
 async function uploadAvatar(req, res) {
     var email = req.body.email;
