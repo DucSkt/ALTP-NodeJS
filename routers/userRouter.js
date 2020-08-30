@@ -143,8 +143,10 @@ async function getBestScore(req, res) {
 
     let mediasArray = await Promise.all(data2);
 
+    mediasArray= mediasArray.filter( item => item.name !== 'admin')
+
     if (data2) {
-        return res.json({ error: false, data: data });
+        return res.json({ error: false, data: mediasArray });
     }
 }
 
@@ -170,6 +172,8 @@ async function getUser(req, res) {
     })
 
     let mediasArray = await Promise.all(data2);
+
+    mediasArray= mediasArray.filter( item => item.name !== 'admin')
 
     if (data2) {
         return res.json({ error: false, data: mediasArray });
